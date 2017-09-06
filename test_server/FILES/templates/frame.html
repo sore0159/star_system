@@ -1,0 +1,29 @@
+{{ define "frame" -}}
+{{ $PROXY := "" }}
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{{ template "title" . }}</title>
+<link rel="stylesheet" href="{{ $PROXY }}/css/{{ template "css" . }}.css">
+<link rel="shortcut icon" href="{{ $PROXY }}/img/yd32.ico">
+</head>
+<body>
+{{ template "titlebar" . }}
+        <div id=bodyholder>
+{{ template "body" . }}
+        </div>
+</body>
+</html>
+{{ end }}
+
+
+{{ define "css" }}stars{{ end }}
+{{ define "title" }}Star System Test Page{{ end }}
+
+{{ define "titlebar" -}}
+<div id=titlebar>Star System Test Page</div>
+{{ end }}
+{{ define "body" -}}
+TEST PAGE BODY
+{{- end }}
