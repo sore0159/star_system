@@ -6,8 +6,6 @@ import (
 	"os"
 )
 
-var LOG *Logger
-
 // Stdout logging may be replaced with file-logging, so
 // just creating a simple wrapper func for now
 func (l *Logger) ServerErr(str string, args ...interface{}) {

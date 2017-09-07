@@ -15,20 +15,24 @@ func main() {
 		log.Printf("ABORTING: Failed to get configuration options: %v\n", err)
 		return
 	}
-
-	if LOG, err = NewLogger(cfg); err != nil {
-		log.Printf("ABORTING: Failed to initialize logging: %v\n", err)
+	r, err := GetResources(cfg)
+	if err != nil {
+		log.Printf("ABORTING: Failed to get resources: %v\n", err)
 		return
 	}
+
 	// Creating my own server var to have access to server.Shutdown()
-	m := MakeMux(cfg)
+	m, err := MakeMux(cfg, r)
+	if err != nil {
+
+	}
 	server := &http.Server{Addr: cfg.HTTPPort, Handler: m}
-	LOG.Record("Starting server on port %s", cfg.HTTPPort)
+	r.Log.Record("Starting server on port %s", cfg.HTTPPort)
 	dn := make(chan byte)
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			if err != http.ErrServerClosed {
-				LOG.ServerErr("Listen and Serve Error: %v", err)
+				r.Log.ServerErr("Listen and Serve Error: %v", err)
 			}
 			dn <- 0
 		}
@@ -37,15 +41,15 @@ func main() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	select {
 	case <-ch:
-		LOG.NewLine()
-		LOG.Record("Termination signal recieved, stopping server...")
+		r.Log.NewLine()
+		r.Log.Record("Termination signal recieved, stopping server...")
 		ctx := context.TODO()
 		err := server.Shutdown(ctx)
 		if err != nil {
-			LOG.ServerErr("shutdown failure: %v", err)
+			r.Log.ServerErr("shutdown failure: %v", err)
 		}
 	case <-dn:
-		LOG.NewLine()
-		LOG.Record("Exiting program...")
+		r.Log.NewLine()
+		r.Log.Record("Exiting program...")
 	}
 }
