@@ -1,3 +1,25 @@
+## 2017 09 07
+
+### What progress has been made?
+
+"Captain" data structures have been added using the std's big.Int type for UID, with a mock DB structure and a basic secure-cookie authentication system.  The test server recognizes first and repeat visits.  JSON loading/saving of the mock db works.
+
+The test server has been structured to avoid the use of global variables as much as possible.  Sub-packages, like the current 'captains' package, take as function parameters things like loggers, secure keys, and data files. 
+
+The test server has a 'configurations' data structure that at present simply uses a list of default values, but is made to be expandable into command line or rc-file configuration.
+
+### What interesting challenges have been encountered?
+
+1. The shift away from storing the logger and the secure cookie encoder/decoder in global variables occurred because of the separation of design in the package system.  The captains package started out relying on an assumed shared structure with whatever server would be running it, but when building the Route Builder I had to consider how to handle logging.
+
+If the route builder should have access to the (then) global logger, then it should be a part of the server package itself.  I considered splitting off logging/routing from the test server, but decided to instead keep the captains package as separate as possible by having the route builder take a logger (interface) as a parameter.
+
+This done, transforming the logger from a global to a server-held variable seemed a natural next step, along with the rest of the program resources.
+
+2. Another interesting consideration was the UID type for the captains data structure.  Given the semi-disposable planned nature for user identity, I decided that an unbounded ID count was worth the extra work in using the big.Int type instead of a simple uint64.  The intention is to store this in a postgres bigserial type.
+
+3. Finally, the encryption/security of the authentication system is being handled by the [gorilla/securecookie](http://www.gorillatoolkit.org/pkg/securecookie) package.  I know not to 'roll my own crypto', though I'm not sure how much I want to integrate toolkits like gorilla into my program.  For now I'm using it as simply as possible, for only the actual encrypting of the UID values.
+
 ---
 ## 2017 09 06
 
