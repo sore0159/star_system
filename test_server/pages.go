@@ -23,14 +23,12 @@ func MakeMux(cfg *Config, r *Resources) (*http.ServeMux, error) {
 type Server struct {
 	*Resources
 	TemplateDir string
-	DataFile    string
 }
 
 func MakeServer(cfg *Config, r *Resources) *Server {
 	return &Server{
 		Resources:   r,
 		TemplateDir: cfg.TemplateDir,
-		DataFile:    cfg.DataFile,
 	}
 }
 
@@ -63,9 +61,6 @@ func (s *Server) CaptainRouter() http.HandlerFunc {
 }
 
 func (s *Server) MadeCaptain(w http.ResponseWriter, r *http.Request, c *cp.Captain) {
-	if m, ok := s.Academy.(*cp.MockDB); ok {
-		m.Save(s.DataFile)
-	}
 	tp, err := s.GetTemplate("frame", "made")
 	if err != nil {
 		s.Log.ServerErr("Failed to read to template: %v", err)

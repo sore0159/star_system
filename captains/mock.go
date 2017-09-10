@@ -10,9 +10,10 @@ import (
 )
 
 type MockDB struct {
-	Guard   sync.RWMutex `json:"-"`
-	LastUID big.Int      `json:"lastUID"`
-	List    []*Captain   `json:"list"`
+	FileName string       `json:"-"`
+	Guard    sync.RWMutex `json:"-"`
+	LastUID  big.Int      `json:"lastUID"`
+	List     []*Captain   `json:"list"`
 }
 
 func NewMockDB() *MockDB {
@@ -28,6 +29,9 @@ func (m *MockDB) NewCaptain() (*Captain, error) {
 	}
 	c.UID.Set(&m.LastUID)
 	m.List = append(m.List, c)
+	if err := m.Save(""); err != nil {
+		return nil, err
+	}
 	return c, nil
 }
 func RandName() string {
@@ -45,6 +49,9 @@ func (m *MockDB) SearchCaptain(uid *big.Int) (*Captain, error) {
 }
 
 func (m *MockDB) Save(fileName string) error {
+	if fileName == "" {
+		fileName = m.FileName
+	}
 	file, err := os.Create(fileName)
 	if err != nil {
 		return err
@@ -53,11 +60,15 @@ func (m *MockDB) Save(fileName string) error {
 	return json.NewEncoder(file).Encode(m)
 }
 func LoadMockDB(fileName string) (*MockDB, error) {
+	m := new(MockDB)
+	m.FileName = fileName
 	file, err := os.Open(fileName)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return m, nil
+		}
 		return nil, err
 	}
 	defer file.Close()
-	m := new(MockDB)
 	return m, json.NewDecoder(file).Decode(m)
 }
