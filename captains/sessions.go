@@ -37,9 +37,12 @@ func SetUID(uid *big.Int, w http.ResponseWriter, s *securecookie.SecureCookie) e
 		return err
 	}
 	cookie := &http.Cookie{
-		Name:  "star-captain",
-		Value: encoded,
-		Path:  "/",
+		Name:     "star-captain",
+		Value:    encoded,
+		Path:     "/",
+		MaxAge:   30000000,
+		HttpOnly: true,
+		// Secure: true,
 	}
 	http.SetCookie(w, cookie)
 	return nil
