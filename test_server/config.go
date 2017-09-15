@@ -5,7 +5,9 @@ import (
 	"os"
 
 	"github.com/gorilla/securecookie"
-	cp "github.com/sore0159/star_system/captains"
+	"github.com/sore0159/star_system/data"
+	db "github.com/sore0159/star_system/mockdb"
+	ssr "github.com/sore0159/star_system/route"
 )
 
 const HTTP_PORT = ":8000"
@@ -34,9 +36,9 @@ func GetConfig() (*Config, error) {
 }
 
 type Resources struct {
-	Log     *Logger
-	Key     *securecookie.SecureCookie
-	Academy cp.Academy
+	Log      *Logger
+	Key      *securecookie.SecureCookie
+	Provider data.Provider
 }
 
 func GetResources(cfg *Config) (*Resources, error) {
@@ -44,18 +46,18 @@ func GetResources(cfg *Config) (*Resources, error) {
 	if err != nil {
 		return nil, fmt.Errorf("logger creation failure: %v\n", err)
 	}
-	a, err := cp.LoadMockDB(cfg.DataFile)
+	p, err := db.LoadMockProvider(cfg.DataFile)
 	if err != nil {
 		if os.IsNotExist(err) {
-			a = cp.NewMockDB()
+			p = db.NewMockProvider()
 		} else {
 			return nil, fmt.Errorf("academy load failure: %v\n", err)
 		}
 	}
-	key := cp.NewCookieSecurity(priv_HASHKEY, priv_BLOCKKEY)
+	key := ssr.NewCookieSecurity(priv_HASHKEY, priv_BLOCKKEY)
 	return &Resources{
-		Log:     l,
-		Key:     key,
-		Academy: a,
+		Log:      l,
+		Key:      key,
+		Provider: p,
 	}, nil
 }

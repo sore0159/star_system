@@ -4,7 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	cp "github.com/sore0159/star_system/captains"
+	"github.com/sore0159/star_system/data"
+	ssr "github.com/sore0159/star_system/route"
 )
 
 func MakeMux(cfg *Config, r *Resources) (*http.ServeMux, error) {
@@ -50,9 +51,9 @@ func (s *Server) TestPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) CaptainRouter() http.HandlerFunc {
-	return cp.CaptainRouter(
+	return ssr.CaptainRouter(
 		s.Log,
-		s.Academy,
+		s.Provider,
 		s.Key,
 		s.FoundCaptain,
 		s.MadeCaptain,
@@ -60,7 +61,7 @@ func (s *Server) CaptainRouter() http.HandlerFunc {
 	)
 }
 
-func (s *Server) MadeCaptain(w http.ResponseWriter, r *http.Request, c *cp.Captain) {
+func (s *Server) MadeCaptain(w http.ResponseWriter, r *http.Request, c *data.Captain) {
 	tp, err := s.GetTemplate("frame", "made")
 	if err != nil {
 		s.Log.ServerErr("Failed to read to template: %v", err)
@@ -69,7 +70,7 @@ func (s *Server) MadeCaptain(w http.ResponseWriter, r *http.Request, c *cp.Capta
 	}
 	tp.ExecuteTemplate(w, "frame", c)
 }
-func (s *Server) FoundCaptain(w http.ResponseWriter, r *http.Request, c *cp.Captain) {
+func (s *Server) FoundCaptain(w http.ResponseWriter, r *http.Request, c *data.Captain) {
 	tp, err := s.GetTemplate("frame", "found")
 	if err != nil {
 		s.Log.ServerErr("Failed to read to template: %v", err)
