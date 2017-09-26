@@ -5,10 +5,10 @@ import (
 )
 
 type Location struct {
-	X, Y, Z uint64
+	X, Y, Z int64
 }
 
-func Diff(a, b uint64) uint64 {
+func Diff(a, b int64) int64 {
 	if a < b {
 		return b - a
 	}

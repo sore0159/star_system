@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/sore0159/star_system/pgdb"
 	"log"
 	"os"
+
+	"github.com/sore0159/star_system/pgdb"
 )
 
 func main() {

@@ -33,7 +33,7 @@ func CreateStarFile(fileName string, steps int) error {
 	defer f.Close()
 	write := func(stars []*data.Star) error {
 		for i, s := range stars {
-			if _, err = f.WriteString(fmt.Sprintf("%d\t%d\t%d\tNULL\n", s.X, s.Y, s.Z)); err != nil {
+			if _, err = f.WriteString(fmt.Sprintf("%d\t%d\t%d\t%s\n", s.X, s.Y, s.Z, s.Name)); err != nil {
 				return fmt.Errorf("file write error on star %d: %v", i, err)
 			}
 		}
