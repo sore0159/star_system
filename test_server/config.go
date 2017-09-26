@@ -50,6 +50,7 @@ func GetResources(cfg *Config) (*Resources, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			p = db.NewMockProvider()
+			p.FileName = cfg.DataFile
 		} else {
 			return nil, fmt.Errorf("academy load failure: %v\n", err)
 		}

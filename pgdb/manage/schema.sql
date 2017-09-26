@@ -1,7 +1,6 @@
 CREATE TABLE captains (
   uid	bigserial,
-  name	text,
-  PRIMARY KEY(uid)
+  name	text
 );
 
 CREATE TABLE stars (

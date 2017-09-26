@@ -4,7 +4,9 @@ Project "Star System" (working title) is a long-term project to build and deploy
 
 ### What can it do right now?
 
-Running go build in the star\_system/test\_server directory will create a binary that, when run in the same directory as the included FILES folder, will serve a basic page that will set/read a secure cookie identifying each visitor with a 'captain'.  Log files and data files will be generated in the FILES folder.
+Running ``go build`` in the star\_system/test\_server directory will create a binary that, when run in the same directory as the included FILES folder, will serve a basic page that will set/read a secure cookie identifying each visitor with a 'captain'.  Log files and data files will be generated in the FILES folder.
+
+Running ``go build`` in the star\_sytem/pgdb/manage directory will create a binary that will manage db tables.  Several variables representing the database passwords and usernames are not included in this repository: to build this project you must add these on your own.
 
 ### What are the design goals of the project?
 

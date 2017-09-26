@@ -33,14 +33,18 @@ func main() {
 		}
 	}
 	if opts.SpawnFlag {
-
+		// SpawnStars needs superdb to use COPY FROM file
 		sdb, err := pgdb.LoadDB(SUPER_DB_USER, SUPER_DB_PASSWORD, SUPER_DB_DB)
 		if err != nil {
 			log.Printf("SUPER DB error: %v\n", err)
 			return
 		}
 		defer sdb.Close()
-		log.Println("Spawning star system!")
+		if opts.StarSteps > 0 {
+			log.Println("Regenerating star system!")
+		} else {
+			log.Println("Reloading star system from file!")
+		}
 		if err = SpawnStars(sdb, opts.StarSteps); err != nil {
 			log.Printf("Spawn err: %v\n", err)
 			return

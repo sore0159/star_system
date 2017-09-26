@@ -2,37 +2,37 @@ package route
 
 import (
 	"encoding/gob"
-	"math/big"
 	"net/http"
 
 	"github.com/gorilla/securecookie"
+	"github.com/sore0159/star_system/data"
 )
 
 func init() {
-	gob.Register(&big.Int{})
+	gob.Register(new(data.UID))
 }
 
 func NewCookieSecurity(hash, block []byte) *securecookie.SecureCookie {
 	return securecookie.New(hash, block)
 }
 
-func CheckCookieUID(r *http.Request, s *securecookie.SecureCookie) (*big.Int, error) {
+func CheckCookieUID(r *http.Request, s *securecookie.SecureCookie) (data.UID, error) {
 	cookie, err := r.Cookie("star-captain")
 	if err != nil {
 		if err == http.ErrNoCookie {
-			return nil, nil
+			return 0, nil
 		}
-		return nil, err
+		return 0, err
 	}
-	uid := new(big.Int)
-	err = s.Decode("star-captain", cookie.Value, uid)
+	var uid data.UID
+	err = s.Decode("star-captain", cookie.Value, &uid)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	return uid, nil
 }
 
-func SetCookieUID(uid *big.Int, w http.ResponseWriter, s *securecookie.SecureCookie) error {
+func SetCookieUID(uid data.UID, w http.ResponseWriter, s *securecookie.SecureCookie) error {
 	encoded, err := s.Encode("star-captain", uid)
 	if err != nil {
 		return err

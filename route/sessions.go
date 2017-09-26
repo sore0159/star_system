@@ -27,11 +27,13 @@ func CaptainRouter(
 			crash(w, r, "UID CHECK FAILURE")
 			return
 		}
+
 		var c *data.Captain
-		if uid != nil {
+		if uid != 0 {
+			l.Record("FOUND UID %v", uid)
 			c, err = a.SearchCaptain(uid)
 			if err == data.ERR_CAP404 {
-				l.Record("cap404 for UID %s", uid)
+				l.Record("cap404 for UID %v", uid)
 				c, err = nil, nil
 			} else if err != nil {
 				l.ServerErr("captain search failed: %v", err)
@@ -46,7 +48,8 @@ func CaptainRouter(
 				crash(w, r, "CAPTAIN CREATION FAILURE")
 				return
 			}
-			SetCookieUID(&c.UID, w, s)
+			l.Record("SET UID %v", c.UID)
+			SetCookieUID(c.UID, w, s)
 			made(w, r, c)
 			return
 		}

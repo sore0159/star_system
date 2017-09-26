@@ -1,10 +1,8 @@
 package data
 
-import (
-	"math/big"
-)
+type UID int64
 
 type Captain struct {
-	UID  big.Int `json:"uid"`
-	Name string  `json:"name"`
+	UID  UID    `json:"uid"`
+	Name string `json:"name"`
 }

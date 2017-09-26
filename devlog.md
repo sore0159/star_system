@@ -1,3 +1,27 @@
+## 2017 09 26
+
+### What progress has been made?
+
+I have built a 'manage' tool to aid in the creation and adjustment of postgres tables and data.  I've started a basic Star data creation routine and tested loading/reading from the database.
+
+### What interesting challenges have been encountered?
+
+* Getting postgres operational and synchronized between development and 'production' environments was a challenge, though not really part of this codebase.
+
+* Creating a separate binary for management of tables and star data came about after considering separation of concerns; there's no reason these tasks need to be part of any data serving/authentication.  
+
+* When creating the management program I had to consider the appropriate level of abstraction: in the past I have gone a bit overboard in trying to abstract away database code, creating interfaces for managing databases for semi-arbitrary go data structures.  My old [database utility package](https://github.com/sore0159/golang-helpers) was a fundamental part of my previous large web app design, but this time I felt a more concrete design would be better.
+
+* I almost wrote another, smaller query generator, but decided to go with manual table schema for the time being.  I intend to use manual queries for table usage, as well.
+
+* I looked at [pgx](https://github.com/jackc/pgx) for database driver use, but decided on the more basic standard library postgres sql driver.  I am, however, trying to create a slight wrapper around the db to hopefully make future changes at this level less painful (though I am not optimistic).
+
+* Location coordinates have switched from uint64 to int64 to better use postgresql's bigint data type.  I'm uncertain about the captain UID data type: bigserial is the most straightforward choice on the db level, but this is essentially just an int64, and server side I have already built around the theoretically unbounded BigInt.  I will try a 'numeric' database data type for the UID, with concerns about efficiency.
+
+* I had to consider how to go about getting the star data from generating program into the database.  The intended scale of this data is such that holding it in memory is not an option, so I am currently generating data in small chunks and then writing them to a file, which upon completion is fed to Postgres' ``COPY FROM`` command.  I'm trusting postgresql to know how to safely read data from a huge file: this has not yet been tested at scale.
+
+    ``COPY FROM`` has some problems already: primarily requiring a superuser database role to allow postgresql to read from the filesystem.  Combined with difficulty in verifying uniqueness in chunk-generated data, it I might investigate how slow ``INSERT`` statements actually are when I start generating data sets large enough.
+
 ## 2017 09 07
 
 ### What progress has been made?

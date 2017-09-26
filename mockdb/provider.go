@@ -38,11 +38,18 @@ func LoadMockProvider(fileName string) (*MockProvider, error) {
 	m.FileName = fileName
 	file, err := os.Open(fileName)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return m, nil
-		}
 		return nil, err
 	}
 	defer file.Close()
 	return m, json.NewDecoder(file).Decode(m)
+}
+func (m *MockProvider) NewCaptain() (*data.Captain, error) {
+	d, e := m.MockAcademy.NewCaptain()
+	m.Save("")
+	return d, e
+}
+func (m *MockProvider) CreateStars(stars []*data.Star) error {
+	e := m.MockStarSystem.CreateStars(stars)
+	m.Save("")
+	return e
 }
