@@ -27,7 +27,7 @@ func TestScanDB(t *testing.T) {
 	for rows.Next() {
 		count += 1
 		var s data.Star
-		err = rows.Scan(&s.X, &s.Y, &s.Z, &s.Name)
+		err = rows.Scan(&s.X, &s.Y, &s.Z)
 		if err != nil {
 			log.Printf("ROWS SCAN ERR: %v\n", err)
 		} else {

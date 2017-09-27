@@ -5,9 +5,8 @@ type Star struct {
 	Name     string `json:"name"`
 }
 
-func NewStar(name string, x, y, z int64) *Star {
+func NewStar(x, y, z int64) *Star {
 	return &Star{
-		Name: name,
 		Location: Location{
 			X: x,
 			Y: y,

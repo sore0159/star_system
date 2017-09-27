@@ -1,7 +1,7 @@
 package spawn
 
 import (
-	"fmt"
+	//"fmt"
 	"math/rand"
 
 	"github.com/sore0159/star_system/data"
@@ -12,7 +12,7 @@ func GenerateStarSystem(r *rand.Rand, step int) []*data.Star {
 	for i := 0; i < 20; i += 1 {
 		sign := rand.Intn(8)
 		s := data.NewStar(
-			fmt.Sprintf("Star %5d", r.Intn(99999)),
+			//fmt.Sprintf("Star %5d", r.Intn(99999)),
 			r.Int63(), r.Int63(), r.Int63(),
 		)
 		switch sign {
